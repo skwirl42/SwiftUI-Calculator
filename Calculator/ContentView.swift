@@ -47,7 +47,7 @@ enum Operation {
 struct ContentView: View {
 
     @State var value = "0"
-    @State var runningNumber = 0
+    @State var runningNumber = 0.0
     @State var currentOperation: Operation = .none
 
     let buttons: [[CalcButton]] = [
@@ -105,31 +105,33 @@ struct ContentView: View {
         case .add, .subtract, .mutliply, .divide, .equal:
             if button == .add {
                 self.currentOperation = .add
-                self.runningNumber = Int(self.value) ?? 0
+                self.runningNumber = Double(self.value) ?? 0
             }
             else if button == .subtract {
                 self.currentOperation = .subtract
-                self.runningNumber = Int(self.value) ?? 0
+                self.runningNumber = Double(self.value) ?? 0
             }
             else if button == .mutliply {
                 self.currentOperation = .multiply
-                self.runningNumber = Int(self.value) ?? 0
+                self.runningNumber = Double(self.value) ?? 0
             }
             else if button == .divide {
                 self.currentOperation = .divide
-                self.runningNumber = Int(self.value) ?? 0
+                self.runningNumber = Double(self.value) ?? 0
             }
             else if button == .equal {
                 let runningValue = self.runningNumber
-                let currentValue = Int(self.value) ?? 0
+                let currentValue = Double(self.value) ?? 0
+                var value = currentValue
                 switch self.currentOperation {
-                case .add: self.value = "\(runningValue + currentValue)"
-                case .subtract: self.value = "\(runningValue - currentValue)"
-                case .multiply: self.value = "\(runningValue * currentValue)"
-                case .divide: self.value = "\(runningValue / currentValue)"
+                case .add: value = runningValue + currentValue
+                case .subtract: value = runningValue - currentValue
+                case .multiply: value = runningValue * currentValue
+                case .divide: value = runningValue / currentValue
                 case .none:
                     break
                 }
+                self.value = "\(value)"
             }
 
             if button != .equal {
@@ -137,7 +139,22 @@ struct ContentView: View {
             }
         case .clear:
             self.value = "0"
-        case .decimal, .negative, .percent:
+            self.currentOperation = .none
+        case .decimal:
+            if (!self.value.contains("."))
+            {
+                self.value = "\(self.value)."
+            }
+        case .negative:
+            if (self.value.starts(with: "-"))
+            {
+                self.value = String(self.value.dropFirst())
+            }
+            else
+            {
+                self.value = "-\(self.value)"
+            }
+        case .percent:
             break
         default:
             let number = button.rawValue
