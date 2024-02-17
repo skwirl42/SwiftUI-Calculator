@@ -70,7 +70,7 @@ struct ContentView: View {
                     Spacer()
                     Text(value)
                         .bold()
-                        .font(.system(size: 100))
+                        .font(.system(size: 85))
                         .foregroundColor(.white)
                 }
                 .padding()
@@ -139,14 +139,13 @@ struct ContentView: View {
             }
         case .clear:
             self.value = "0"
-            self.currentOperation = .none
         case .decimal:
-            if (!self.value.contains("."))
+            if !self.value.contains(".")
             {
                 self.value = "\(self.value)."
             }
         case .negative:
-            if (self.value.starts(with: "-"))
+            if self.value.starts(with: "-")
             {
                 self.value = String(self.value.dropFirst())
             }
@@ -155,7 +154,9 @@ struct ContentView: View {
                 self.value = "-\(self.value)"
             }
         case .percent:
-            break
+            let percent = (Double(self.value) ?? 0) / 100.0
+            let value = self.runningNumber * percent
+            self.value = "\(value)"
         default:
             let number = button.rawValue
             if self.value == "0" {
